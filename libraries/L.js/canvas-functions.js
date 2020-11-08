@@ -69,31 +69,31 @@
     module.height = inputHeight;
   };
 
-  let scaledX = 1;
-  let scaledY = 1;
+  let SCALED_X = 1;
+  let SCALED_Y = 1;
 
   module.scale = (scaleX, scaleY = scaleX) => {
-    scaledX *= scaleX;
-    scaledY *= scaleY;
+    SCALED_X *= scaleX;
+    SCALED_Y *= scaleY;
     module.ctx.scale(scaleX, scaleY);
   };
 
-  let translatedX = 0;
-  let translatedY = 0;
+  let TRANSLATED_X = 0;
+  let TRANSLATED_Y = 0;
 
   module.translate = (x, y) => {
-    translatedX += x * scaledX;
-    translatedY += y * scaledY;
+    TRANSLATED_X += x * SCALED_X;
+    TRANSLATED_Y += y * SCALED_Y;
     module.ctx.translate(x, y);
   };
 
   module.background = (color = "white") => {
     module.ctx.fillStyle = color;
     module.ctx.fillRect(
-      -translatedX / scaledX,
-      -translatedY / scaledY,
-      (module.canvas.width + translatedX) / scaledX,
-      (module.canvas.height + translatedY) / scaledY
+      -TRANSLATED_X / SCALED_X,
+      -TRANSLATED_Y / SCALED_Y,
+      (module.canvas.width + TRANSLATED_X) / SCALED_X,
+      (module.canvas.height + TRANSLATED_Y) / SCALED_Y
     );
   };
 
@@ -113,6 +113,11 @@
     NO_LOOP = true;
   };
 
+  module.loop = () => {
+    NO_LOOP = false;
+    startLoop();
+  };
+
   let FPS = 60;
 
   module.frameRate = (fps) => {
@@ -127,30 +132,30 @@
 
   // Drawing styles
 
-  let NO_STROKE = false;
-  let NO_FILL = false;
+  let STROKE = true;
+  let FILL = true;
 
   module.strokeWeight = (weight) => {
     module.ctx.lineWidth = weight;
-    NO_STROKE = false;
+    STROKE = true;
   };
 
   module.stroke = (color = "white") => {
     module.ctx.strokeStyle = color;
-    NO_STROKE = false;
+    STROKE = true;
   };
 
   module.fill = (color = "white") => {
     module.ctx.fillStyle = color;
-    NO_FILL = false;
+    FILL = true;
   };
 
   module.noFill = () => {
-    NO_FILL = true;
+    FILL = false;
   };
 
   module.noStroke = () => {
-    NO_STROKE = true;
+    STROKE = false;
   };
 
   // Styles for text
@@ -179,8 +184,8 @@
     if (typeof maxWidth == "undefined") {
       params = [text, x, y];
     }
-    if (!NO_FILL) module.ctx.fillText(...params);
-    else module.ctx.strokeText(...params);
+    if (FILL) module.ctx.fillText(...params);
+    if (STROKE) module.ctx.strokeText(...params);
     module.ctx.closePath();
   };
 
@@ -188,24 +193,24 @@
     module.ctx.beginPath();
     module.ctx.moveTo(x0, y0);
     module.ctx.lineTo(x1, y1);
-    if (!NO_STROKE) module.ctx.stroke();
-    else module.ctx.fill();
+    if (STROKE) module.ctx.stroke();
+    if (FILL) module.ctx.fill();
     module.ctx.closePath();
   };
 
   module.Ellipse = (x, y, size1, size2 = size1) => {
     module.ctx.beginPath();
     module.ctx.ellipse(x, y, size1 / 2, size2 / 2, 0, 0, 2 * Math.PI);
-    if (!NO_FILL) module.ctx.fill();
-    else module.ctx.stroke();
+    if (FILL) module.ctx.fill();
+    if (STROKE) module.ctx.stroke();
     module.ctx.closePath();
   };
 
   module.Rectangle = (x, y, width, height) => {
     module.ctx.beginPath();
     module.ctx.rect(x, y, width, height);
-    if (!NO_FILL) module.ctx.fill();
-    else module.ctx.stroke();
+    if (FILL) module.ctx.fill();
+    if (STROKE) module.ctx.stroke();
     module.ctx.closePath();
   };
 
@@ -217,8 +222,8 @@
   };
 
   module.endShape = () => {
-    if (!NO_FILL) module.ctx.fill();
-    else module.ctx.stroke();
+    if (FILL) module.ctx.fill();
+    if (STROKE) module.ctx.stroke();
     module.ctx.closePath();
   };
 
@@ -290,9 +295,9 @@
     setTimeout(() => {
       draw();
       // reset scale
-      module.scale(1 / scaledX, 1 / scaledY);
+      module.scale(1 / SCALED_X, 1 / SCALED_Y);
       // reset translate
-      module.translate(-translatedX, -translatedY);
+      module.translate(-TRANSLATED_X, -TRANSLATED_Y);
       if (!NO_LOOP) {
         let endTime = new Date();
         let timeDifference = (endTime - startTime) / 1000;
