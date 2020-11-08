@@ -284,10 +284,10 @@
     let startTime = new Date();
     setTimeout(() => {
       draw();
-      // reset translate
-      module.translate(-translatedX, -translatedY);
       // reset scale
       module.scale(scaledX, scaledY);
+      // reset translate
+      module.translate(-translatedX, -translatedY);
       if (!NO_LOOP) {
         let endTime = new Date();
         let timeDifference = (endTime - startTime) / 1000;
