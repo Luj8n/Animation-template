@@ -69,6 +69,15 @@
     module.height = inputHeight;
   };
 
+  let scaledX = 1;
+  let scaledY = 1;
+
+  module.scale = (scaleX, scaleY = scaleX) => {
+    module.ctx.scale(scaleX, scaleY);
+    scaledX /= scaleX;
+    scaledY /= scaleY;
+  };
+
   let translatedX = 0;
   let translatedY = 0;
 
@@ -275,7 +284,10 @@
     let startTime = new Date();
     setTimeout(() => {
       draw();
+      // reset translate
       module.translate(-translatedX, -translatedY);
+      // reset scale
+      module.scale(scaledX, scaledY);
       if (!NO_LOOP) {
         let endTime = new Date();
         let timeDifference = (endTime - startTime) / 1000;
