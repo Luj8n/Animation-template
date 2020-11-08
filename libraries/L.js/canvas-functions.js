@@ -73,23 +73,28 @@
   let scaledY = 1;
 
   module.scale = (scaleX, scaleY = scaleX) => {
+    scaledX *= scaleX;
+    scaledY *= scaleY;
     module.ctx.scale(scaleX, scaleY);
-    scaledX /= scaleX;
-    scaledY /= scaleY;
   };
 
   let translatedX = 0;
   let translatedY = 0;
 
   module.translate = (x, y) => {
-    translatedX += x;
-    translatedY += y;
+    translatedX += x * scaledX;
+    translatedY += y * scaledY;
     module.ctx.translate(x, y);
   };
 
   module.background = (color = "white") => {
     module.ctx.fillStyle = color;
-    module.ctx.fillRect(0, 0, module.canvas.width, module.canvas.height);
+    module.ctx.fillRect(
+      -translatedX / scaledX,
+      -translatedY / scaledY,
+      (module.canvas.width + translatedX) / scaledX,
+      (module.canvas.height + translatedY) / scaledY
+    );
   };
 
   module.getImageData = (x, y, width, height) => {
@@ -148,7 +153,7 @@
     NO_STROKE = true;
   };
 
-  // for text
+  // Styles for text
 
   module.textFont = (font) => {
     module.ctx.font = font;
@@ -285,14 +290,14 @@
     setTimeout(() => {
       draw();
       // reset scale
-      module.scale(scaledX, scaledY);
+      module.scale(1 / scaledX, 1 / scaledY);
       // reset translate
       module.translate(-translatedX, -translatedY);
       if (!NO_LOOP) {
         let endTime = new Date();
         let timeDifference = (endTime - startTime) / 1000;
         REAL_FPS = 1 / timeDifference;
-        requestAnimationFrame(startLoop); // Create an animation loop
+        requestAnimationFrame(startLoop); // Creating an animation loop
       }
     }, 1000 / FPS);
   }
