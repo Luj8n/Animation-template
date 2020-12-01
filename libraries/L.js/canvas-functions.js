@@ -1,8 +1,19 @@
 (function (global) {
   let module = (global.L = { ...global.L });
 
-  module.canvas = document.querySelector("#canvas");
-  module.ctx = module.canvas.getContext("2d");
+  let CANVAS_IS_CREATED = false;
+
+  module.createCanvas = (inputWidth, inputHeight) => {
+    module.canvas = document.createElement("canvas");
+    document.body.appendChild(module.canvas);
+    module.ctx = module.canvas.getContext("2d");
+    module.canvas.style.backgroundColor = "rgba(0, 0, 0, 0)";
+    module.canvas.style.position = "absolute";
+
+    module.resizeCanvas(inputWidth, inputHeight);
+
+    CANVAS_IS_CREATED = true;
+  };
 
   // Event Listeners
 
@@ -15,9 +26,9 @@
   };
 
   let LOCKED_POINTER = false;
-  module.canvas.requestPointerLock = module.canvas.requestPointerLock || module.canvas.mozRequestPointerLock;
 
   module.lockPointer = () => {
+    module.canvas.requestPointerLock = module.canvas.requestPointerLock || module.canvas.mozRequestPointerLock;
     if (LOCKED_POINTER) document.exitPointerLock();
     else module.canvas.requestPointerLock();
   };
@@ -61,7 +72,7 @@
   module.width = 0;
   module.height = 0;
 
-  module.setCanvasSize = (inputWidth, inputHeight) => {
+  module.resizeCanvas = (inputWidth, inputHeight) => {
     module.canvas.width = inputWidth;
     module.canvas.height = inputHeight;
 
@@ -294,10 +305,12 @@
     let startTime = new Date();
     setTimeout(() => {
       draw();
-      // reset scale
-      module.scale(1 / SCALED_X, 1 / SCALED_Y);
-      // reset translate
-      module.translate(-TRANSLATED_X, -TRANSLATED_Y);
+      if (CANVAS_IS_CREATED) {
+        // reset scale
+        module.scale(1 / SCALED_X, 1 / SCALED_Y);
+        // reset translate
+        module.translate(-TRANSLATED_X, -TRANSLATED_Y);
+      }
       if (!NO_LOOP) {
         let endTime = new Date();
         let timeDifference = (endTime - startTime) / 1000;

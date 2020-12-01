@@ -5,7 +5,7 @@ function preload() {
 }
 
 function setup() {
-  L.setCanvasSize(900, 900);
+  L.createCanvas(900, 900);
   L.centerCanvas();
 }
 
