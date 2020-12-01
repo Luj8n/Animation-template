@@ -5,7 +5,6 @@
     constructor(x = 0, y = 0) {
       this.x = x;
       this.y = y;
-      this.max = Infinity;
     }
     calculatePos(dir, mag) {
       this.x = Math.cos(dir) * mag;
@@ -33,18 +32,15 @@
     }
     limit(max) {
       if (typeof max != "undefined") {
-        this.max = max;
-        this.setMag(this.mag());
+        if (this.mag() > max) {
+          this.setMag(max);
+        }
       }
       return this;
     }
     setMag(mag) {
       if (typeof mag != "undefined") {
-        let newMag = mag;
-        if (mag > this.max) {
-          newMag = this.max;
-        }
-        this.calculatePos(this.heading(), newMag);
+        this.calculatePos(this.heading(), mag);
       }
       return this;
     }
@@ -57,7 +53,6 @@
     }
     normalize() {
       this.calculatePos(this.heading(), 1);
-      this.max = Infinity;
     }
     add(otherV) {
       if (typeof otherV != "undefined") {
