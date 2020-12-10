@@ -1,3 +1,6 @@
+// L.js is a library which was made by Luj8n
+// Didn't want to use p5.js, so I made my little own (and used like all the same names) to learn JS better
+
 (function (global) {
   let module = (global.L = { ...global.L });
 

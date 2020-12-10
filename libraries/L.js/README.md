@@ -1,3 +1,1 @@
-L.js is a "library" made by luj8n
-
-Current version: 6.1
+L.js is a litte library made by luj8n
